@@ -6,8 +6,8 @@ $(document).ready(function() {
     const myapi1 = "684301ad72702c6cc4b3d7d2";
     const myapi2 = "6843f2e8e22293a1177497af";
 
-    url = url2;
-    myapi = myapi2;
+    url = url1;
+    myapi = myapi1;
     // Sample data
     let soalData = [
  //       { nomor: 1, soal: "Apa penyebab utama pemanasan global?", jawabanIdeal: "Pemanasan global terutama disebabkan oleh emisi gas rumah kaca seperti karbon dioksida.", kataKunci: "pemanasan global, emisi, gas rumah kaca, karbon dioksida" },
@@ -70,7 +70,7 @@ $(document).ready(function() {
                     render: function(data, type, row) {
                         return `
                             <button class="btn-action btn-edit" data-id="${row.id}"><i class="fas fa-edit"></i> Ubah</button>
-                            <button class="btn-action btn-delete" data-id="" data-api="${row._id}"><i class="fas fa-trash"></i> Hapus</button>
+                            <button class="btn-action btn-delete" data-id="${row.id_tema}" data-api="${row._id}"><i class="fas fa-trash"></i> Hapus</button>
                         `;
                     }
                 }
@@ -283,7 +283,9 @@ $(document).ready(function() {
             }
             else if (tableId == 'soal-real-table') {
                 soalData = soalData.filter(item => item._id !== _id);
-                soalDel(_id, soalData);
+                let tmp = soalData;
+                tmp = tmp.filter(item => item.id_tema === id);
+                soalDel(_id, tmp);
                 //soalRealTable.clear().rows.add(soalData).draw();
             }
             } else {
@@ -306,7 +308,11 @@ $(document).ready(function() {
     function ambilSoalWhere(id_tema){
         if(soalData.length > 0){
             let tmp = soalData;
+            
+            console.log(soalData)
+            console.log('batas')
             tmp = tmp.filter(item => item.id_tema == id_tema);
+            console.log(tmp);
             soalRealTable.clear().rows.add(tmp).draw();
         }
 
@@ -340,6 +346,7 @@ $(document).ready(function() {
     }
 
     function ambilTema(){
+        loadscreen()
         $.ajax(settings).done(function (response) {
             console.log(response)
             temaUjian = response;
@@ -349,7 +356,10 @@ $(document).ready(function() {
             soalTable.rows.add(temaUjian);
             soalTable.draw();
             }
-
+            loadscreen()
+        })
+        .fail(function(e){
+            $('#err-msg').text(JSON.stringify(e));
         });
     }
     
@@ -367,10 +377,14 @@ $(document).ready(function() {
     }
 
     function ambilSoal(){
+        loadscreen()
         $.ajax(soalSet).done(function (response) {
             //console.log(response)
             soalData = response;
-
+            loadscreen()
+        })
+        .fail(function(e){
+            $('#err-msg').text(JSON.stringify(e));
         });
     }
 
@@ -392,9 +406,10 @@ $(document).ready(function() {
           "data": JSON.stringify(data)
         }
 
-    
+        loadscreen()
         $.ajax(buatTemaSet).done(function (response) {
             console.log(response);
+            loadscreen()
             ambilTema();
         });
     }
@@ -415,13 +430,16 @@ $(document).ready(function() {
           "data": JSON.stringify(data)
         }
 
-    
+        loadscreen();
         $.ajax(buatSoalSet).done(function (response) {
             console.log(response);
              let tmp = soalData;
              tmp[tmp.length] = response;
-             soalRealTable.clear().rows.add(tmp).draw();
 
+             console.log(tmp);
+             tmp = tmp.filter(item => item.id_tema == data.id_tema)
+             soalRealTable.clear().rows.add(tmp).draw();
+            loadscreen();
             ambilSoal();
             // const idTema = parseInt($("#id-tema").val());
             // ambilSoalWhere(idTema);
@@ -441,10 +459,11 @@ $(document).ready(function() {
         "cache-control": "no-cache"
       }
     }
-
+        loadscreen();
         $.ajax(temaDelSet).done(function (response) {
             console.log(response);
             soalTable.clear().rows.add(updateTema).draw();
+            loadscreen();
             ambilTema();
         });
     }
@@ -462,16 +481,29 @@ $(document).ready(function() {
             "cache-control": "no-cache"
         }
     }
-
+    loadscreen();
     $.ajax(settings).done(function (response) {
         console.log(response);
         soalRealTable.clear().rows.add(updateTable).draw();
+        loadscreen();
     });
     }
 
+    // fungsi loadscreen
+    function loadscreen(){
+        let ls = $('#loadscreen');
+        if(ls.hasClass('ls-active')){
+            ls.removeClass('ls-active');
+            ls.addClass('ls-gone');
+        }
+        else {
+            ls.removeClass('ls-gone');
+            ls.addClass('ls-active');
+        }
+    }
 
-
+    //loadscreen()
 
     ambilTema();
-    ambilSoal();
+   // ambilSoal();
 });
