@@ -505,5 +505,5 @@ $(document).ready(function() {
     //loadscreen()
 
     ambilTema();
-   // ambilSoal();
+    ambilSoal();
 });
