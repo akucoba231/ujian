@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Admin Panel</span>
+            </div>
+            <div class="user-info">
+                <span>Admin</span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <ul class="menu">
+            <li class="active" data-page="beranda"><i class="fas fa-home"></i> Beranda</li>
+            <li data-page="soal"><i class="fas fa-question-circle"></i> Daftar Ujian</li>
+        </ul>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content">
+                <!-- Beranda -->
+                <div id="beranda-page" class="page active">
+                    <h1><i class="fas fa-home"></i> Beranda</h1>
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <h3>Total Ujian</h3>
+                            <p id="total-soal">0</p>
+                        </div>
+                        <div class="card">
+                            <h3>Total Jawaban</h3>
+                            <p id="total-jawaban">0</p>
+                        </div>
+                        <div class="card">
+                            <h3>Rata-rata Nilai</h3>
+                            <p id="rata-nilai">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ujian -->
+                <div id="soal-page" class="page">
+                    <div class="page-header">
+                        <h1><i class="fas fa-question-circle"></i> Daftar Ujian</h1>
+                    </div>
+                    <table id="soal-table" class="display">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Judul Ujian</th>
+                                <th>Deskripsi</th>
+                                <th>Opsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Soal -->
+                <div id="soal-real" class="page">
+                  <div id="change">
+                    <button id="">Jawaban Siswa</button>
+                  </div>
+                    <div class="page-header pg-new">
+                        <button type="button" class="no-style" id="back"><i class="fas fa-arrow-left"></i> </button> 
+                        <h1>Nama Ujian : <span id="judul-ujian"></span></h1>
+                        <button id="tambah-soal-real" class="btn-tambah"><i class="fas fa-plus"></i> </button>
+                        <input type="hidden" id="id-tema" />
+                    </div>
+                    <table id="soal-real-table" class="display">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Judul Soal</th>
+                                <th>Rincian</th>
+                                <th>Jawaban Ideal</th>
+                                <th>Kata Kunci</th>
+                                <th>Saran</th>
+                                <th>Nasihat</th>
+                                <th>Opsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Buttons -->
+        <button id="tambah-soal" class="fab" style="display: none;"><i class="fas fa-plus"></i></button>
+        <button id="tambah-jawaban" class="fab" style="display: none;"><i class="fas fa-plus"></i></button>
+
+        <!-- Modal-modals tetap sama seperti sebelumnya -->
+        
+        
+    <!-- Modal Tambah Soal -->
+    <div id="soal-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Tambah Ujian Baru</h2>
+            <form id="soal-form">
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" id="tanggal" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="soal-text">Judul Ujian</label>
+                    <textarea id="soal-text" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="jawaban-ideal">Deskripsi</label>
+                    <textarea id="jawaban-ideal" required></textarea>
+                </div>
+                <!-- <div class="form-group">
+                    <label for="kata-kunci">Kata Kunci (pisahkan dengan koma)</label>
+                    <input type="text" id="kata-kunci" required>
+                </div> -->
+                <button type="submit" class="btn-submit">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Soal Real -->
+    <div id="soal-real-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Tambah Soal Baru</h2>
+            <form id="soal-real-form">
+                <div class="form-group">
+                    <label for="judul-soal">Judul Soal</label>
+                    <textarea id="judul-soal" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rincian">Rincian Soal</label>
+                    <textarea id="rincian" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ideal">Jawaban Ideal</label>
+                    <textarea id="ideal" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="keyword">Kata Kunci (pisahkan dengan koma)</label>
+                    <input type="text" id="keyword" required>
+                </div>
+                <div class="form-group">
+                    <label for="saran">Saran (jika nilai bagus)</label>
+                    <input type="text" id="saran" required>
+                </div>
+                <div class="form-group">
+                    <label for="nasihat">Nasihat (jika nilai kurang)</label>
+                    <input type="text" id="nasihat" required>
+                </div>
+                <button type="submit" class="btn-submit">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Jawaban -->
+    <div id="jawaban-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Tambah Jawaban Baru</h2>
+            <form id="jawaban-form">
+                <div class="form-group">
+                    <label for="nama-peserta">Nama Peserta</label>
+                    <input type="text" id="nama-peserta" required>
+                </div>
+                <div class="form-group">
+                    <label for="jawaban-peserta">Jawaban</label>
+                    <textarea id="jawaban-peserta" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="nilai-peserta">Nilai</label>
+                    <input type="number" id="nilai-peserta" min="0" max="100" required>
+                </div>
+                <button type="submit" class="btn-submit">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="loadscreen" class="ls-gone">
+        <span>Loading Data...</span>
+        <span id="err-msg"></span>
+    </div>
+
+        
+        <!-- ... -->
+    </div>
+
+    <!-- Scripts tetap sama -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="script.js"></script>
+    <!-- ... -->
+</body>
+</html>
