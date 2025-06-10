@@ -428,8 +428,9 @@ table tr td:active{
 
 .ls-active {
   display: flex;
-  justify-content: space-between;
-  align-items: end;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #change {
